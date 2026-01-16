@@ -13,6 +13,10 @@ public class Hand {
         this.cards.add(card);
     }
 
+    public int getNumOfCards() {
+        return cards.size();
+    }
+
     public Card getCard(int index) {
         return cards.get(index);
     }

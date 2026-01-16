@@ -9,6 +9,7 @@ public class Player {
 
     public Player(String name) {
         this.name = name;
+        this.hands = new ArrayList<Hand>();
     }
 
     public ArrayList<Hand> getHands() {
