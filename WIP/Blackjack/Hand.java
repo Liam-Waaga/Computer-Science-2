@@ -91,4 +91,42 @@ public class Hand {
     public boolean hasBlackjack() {
         return this.blackJack;
     }
+
+    public boolean canSplit() {
+        return getNumOfCards() == 2 && this.cards.get(0).equals(this.cards.get(1));
+    }
+
+    public Hand split() {
+        Hand other = new Hand();
+        other.addCard(this.cards.remove(1));
+        return other;
+    }
+
+    public void playDealer(DeckOfCards deck) {
+        /* if it is 21 off the bat, deal must have a blackjack */
+        if (calculateHand() == 21)
+            blackJack();
+
+        /* play until hand value >17 */
+        while (calculateHand() < 17)
+            addCard(deck.dealCard());
+
+        /* see if we bust */
+        if (calculateHand() > 21)
+            bust();
+    }
+
+    public String hasWon(Hand dealer) {
+        if (hasBust())
+            return "Bust";
+        else if (hasBlackjack())
+            return "Blackjack";
+        else if (dealer.hasBust())
+            return "Won";
+        else if (calculateHand() == dealer.calculateHand())
+            return "Pushed";
+        else if (calculateHand() > dealer.calculateHand())
+            return "Won";
+        else return "Lost";
+    }
 }

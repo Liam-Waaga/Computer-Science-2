@@ -2,33 +2,32 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BlackJack {
-    /**
-     * @param args
-     */
     public static void main(String[] args) {
         
-        DeckOfCards deck = new DeckOfCards();
-
-        Player dealer = new Player("Dealer");
-        ArrayList<Player> players = new ArrayList<Player>();
+        
         int num_of_players = -1;
-
-        boolean play_again = false;
-
+        
+        boolean play_again = true;
+        
         Scanner stdin = new Scanner(System.in);
-
-
-        deck.shuffle();
-
-        dealer.getHands().add(new Hand());
-
-        dealer.getHands().get(0).addCard(deck.dealCard());
-        dealer.getHands().get(0).addCard(deck.dealCard());
-
+        
+        
         System.out.printf("TODO, Explain Rules\n");
-
+        
         
         while (play_again) {
+
+            Player dealer = new Player("Dealer");
+            ArrayList<Player> players = new ArrayList<Player>();
+
+            DeckOfCards deck = new DeckOfCards();
+    
+            deck.shuffle();
+    
+            dealer.getHands().add(new Hand());
+    
+            dealer.getHands().get(0).addCard(deck.dealCard());
+            dealer.getHands().get(0).addCard(deck.dealCard());
             System.out.printf("How many players? (1-6): ");
 
             {
@@ -67,7 +66,6 @@ public class BlackJack {
 
             /* Main player loop */
             for (int i = 0; i < num_of_players; i++) {
-                hands:
                 for (int j = 0; j < players.get(j).getHands().size(); j++) {
                     hitstand:
                     while (true) {
@@ -77,25 +75,18 @@ public class BlackJack {
                             players.get(i).getHands().get(j).blackJack();
                             break hitstand;
                         }
-                        if (players.get(i).getHands().get(j).getNumOfCards() == 2 &&
-                            players.get(i).getHands().get(j).getCard(0).equals(players.get(i).getHands().get(j).getCard(1))) {
+                        if (players.get(i).getHands().get(j).canSplit()) {
                             input:
                             while (true) {
                                 System.out.printf("You have a %s. Do you want to split?: (y/n): ", players.get(i).getHands().get(j));
                                 String in = stdin.next();
                                 
                                 if (in.equals("y")) {
-                                    /* Works in theory, who knows in practice */
-                                    Hand hand1 = new Hand();
-                                    hand1.addCard(players.get(i).getHands().get(j).getCard(0));
-                                    hand1.addCard(deck.dealCard());
-                                    
-                                    Hand hand2 = new Hand();
-                                    hand2.addCard(players.get(i).getHands().get(j).getCard(1));
-                                    hand2.addCard(deck.dealCard());
 
-                                    players.get(i).getHands().set(j, hand1);
-                                    players.get(i).getHands().add(j + 1, hand2);
+                                    players.get(i).getHands().add(players.get(i).getHands().get(j).split());
+
+                                    players.get(i).getHands().get(j).addCard(deck.dealCard());
+                                    players.get(i).getHands().get(j + 1).addCard(deck.dealCard());
 
                                     continue hitstand;
 
@@ -104,7 +95,6 @@ public class BlackJack {
                                 } else {
                                     continue;
                                 }
-
                             }
                         }
                         System.out.printf("%s's hand %s has %s. Your total is %s. Would you like to hit or stand? (h or s): ",
@@ -135,22 +125,16 @@ public class BlackJack {
                 }
             }
 
-            while (dealer.getHands().get(0).calculateHand() < 17)
-                dealer.getHands().get(0).addCard(deck.dealCard());
-            if (dealer.getHands().get(0).calculateHand() > 21)
-                dealer.getHands().get(0).bust();
+            dealer.getHands().get(0).playDealer(deck);
 
             for (int i = 0; i < 3; i++) {
                 System.out.printf(".");
                 try {Thread.sleep(1000);} catch (Exception e) {}
             }
+
             System.out.println();
             System.out.println();
 
-            // for (int i = 0; i < num_of_players; i++) {
-            //     System.out.printf("Player %s has bust: %s\n", i + 1, players.get(i).hasBust());
-            // }
-            // System.out.printf("Dealer has bust: %s\n", dealer.hasBust());
             if (dealer.getHands().get(0).hasBust()) {
                 System.out.printf("Dealer has %s, and has Bust\n", dealer.getHands().get(0));
             } else {
@@ -159,33 +143,9 @@ public class BlackJack {
 
             for (int i = 0; i < num_of_players; i++) {
                 for (int j = 0; j < players.get(i).getHands().size(); j++) {
-                    boolean has_won = false;
-                    boolean has_tied = false;
-                    String message = "";
-    
-                    if (players.get(i).getHands().get(j).hasBust())
-                        has_won = false;
-                    else if (dealer.getHands().get(0).hasBust())
-                        has_won = true;
-                    else if (players.get(i).getHands().get(j).calculateHand() > dealer.getHands().get(0).calculateHand())
-                        has_won = true;
-                    else if (players.get(i).getHands().get(j).calculateHand() == dealer.getHands().get(0).calculateHand())
-                        has_won = !(has_tied = true);
-                    else if (players.get(i).getHands().get(j).calculateHand() < dealer.getHands().get(0).calculateHand())
-                        has_won = false;
-                    
-                    if (has_tied)
-                        message = "Push";
-                    else if (players.get(i).getHands().get(j).hasBlackjack())
-                        message = "Blackjack";
-                    else if (players.get(i).getHands().get(j).hasBust())
-                        message = "Bust";
-                    else if (has_won)
-                        message = "Won";
-                    else
-                        message = "Lost";
-    
-                    System.out.printf("%s's hand %s has %s\n", players.get(i).getName(), j + 1, message);
+                    System.out.printf("%s's hand %s has %s\n",
+                        players.get(i).getName(), j + 1,
+                        players.get(i).getHands().get(j).hasWon(dealer.getHands().get(0)));
                 }
             }
             play_again = false;
