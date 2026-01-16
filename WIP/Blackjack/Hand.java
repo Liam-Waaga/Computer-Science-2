@@ -4,9 +4,22 @@ public class Hand {
     private ArrayList<Card> cards;
     private boolean hasBust = false;
     private boolean blackJack = false;
+    private boolean isSplit = false;
+
+    private int bet = 0;
+    private int insuranceBet = 0;
 
     public Hand() {
         this.cards = new ArrayList<Card>();
+    }
+
+    public void setInitialBet(int bet) {
+        if (this.bet == 0)
+            this.bet = bet;
+    }
+
+    public int getBet() {
+        return bet;
     }
 
     public void addCard(Card card) {
@@ -81,7 +94,7 @@ public class Hand {
     }
 
     public void blackJack() {
-        this.blackJack = true;
+        this.blackJack = true && !isSplit;
     }
 
     public boolean hasBust() {
@@ -99,7 +112,15 @@ public class Hand {
     public Hand split() {
         Hand other = new Hand();
         other.addCard(this.cards.remove(1));
+        this.isSplit = true;
+        other.isSplit = true;
+
+        other.bet = this.bet;
         return other;
+    }
+
+    public boolean isSplit() {
+        return isSplit;
     }
 
     public void playDealer(DeckOfCards deck) {
@@ -128,5 +149,9 @@ public class Hand {
         else if (calculateHand() > dealer.calculateHand())
             return "Won";
         else return "Lost";
+    }
+
+    public void insuranceBet(int bet) {
+        this.insuranceBet = Math.min(bet, this.bet / 2);
     }
 }

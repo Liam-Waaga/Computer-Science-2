@@ -11,8 +11,10 @@ public class BlackJack {
         
         Scanner stdin = new Scanner(System.in);
         
-        
-        System.out.printf("TODO, Explain Rules\n");
+        /* TODO add rules
+         * https://bicyclecards.com/how-to-play/blackjack
+        */
+        System.out.printf("https://bicyclecards.com/how-to-play/blackjack\n");
         
         
         while (play_again) {
@@ -28,17 +30,23 @@ public class BlackJack {
     
             dealer.getHands().get(0).addCard(deck.dealCard());
             dealer.getHands().get(0).addCard(deck.dealCard());
+
+            if (dealer.getHands().get(0).calculateHand() == 21)
+                dealer.getHands().get(0).blackJack();
+            
             System.out.printf("How many players? (1-6): ");
 
             {
                 boolean isnt_int;
                 while ( (isnt_int = !stdin.hasNextInt()) || (num_of_players = stdin.nextInt()) < 1 || num_of_players > 6) {
-                    System.out.printf("Must be a number 1 to 6\nHow many players? (1-6): ");
+                    System.out.printf("Must be a number 1 to 6\nHow many players? (1-6: default previous): ");
                     if (isnt_int)
                         stdin.next();
                 }
     
             }
+
+            System.out.printf("Now agree among yourselves the betting limits\n");
             
             System.out.println();
             
@@ -48,6 +56,32 @@ public class BlackJack {
                 players.get(i).getHands().add(new Hand());
                 players.get(i).getHands().get(0).addCard(deck.dealCard());
                 players.get(i).getHands().get(0).addCard(deck.dealCard());
+
+                if (players.get(i).getHands().get(0).calculateHand() == 21) {
+                    players.get(i).getHands().get(0).blackJack();
+                }
+
+                int bet;
+                while (true) {
+                    System.out.printf("%s what would you like your bet to be?: ", players.get(i));
+                    if (stdin.hasNextInt()) {
+                        bet = Math.abs(stdin.nextInt());
+                        break;
+                    } else {
+                        stdin.next();
+                    }
+                }
+                players.get(i).getHands().get(0).setInitialBet(bet);
+            }
+
+            Card dealerUp = dealer.getHands().get(0).getCard(0);
+
+            if (dealerUp.getFace().equals("Ace")) {
+                /* TODO Start insurance betting here */
+            }
+
+            if (dealer.getHands().get(0).hasBlackjack()) {
+                /* TODO deal with dealer blackjack, and if up is ace, then deal with insurance bets */
             }
 
             System.out.println();
@@ -87,6 +121,11 @@ public class BlackJack {
 
                                     players.get(i).getHands().get(j).addCard(deck.dealCard());
                                     players.get(i).getHands().get(j + 1).addCard(deck.dealCard());
+
+                                    if (players.get(i).getHands().get(j).getCard(0).getFace().equals("Ace")) {
+                                        /* TODO implement ace limits */
+                                        continue hitstand;
+                                    }
 
                                     continue hitstand;
 

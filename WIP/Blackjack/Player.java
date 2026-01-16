@@ -6,6 +6,10 @@ public class Player {
     private String name;
     private ArrayList<Hand> hands;
 
+    private int insuranceBet;
+
+    private int chips;
+
 
     public Player(String name) {
         this.name = name;
@@ -18,5 +22,9 @@ public class Player {
 
     public String getName() {
         return name;
+    }
+
+    public String toString() {
+        return getName();
     }
 }
