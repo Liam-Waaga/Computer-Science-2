@@ -2,9 +2,12 @@ import java.util.ArrayList;
 
 public class Hand {
     private ArrayList<Card> cards;
+    private Card doubleDownCard;
     private boolean hasBust = false;
     private boolean blackJack = false;
     private boolean isSplit = false;
+
+    private boolean runHasRun = false;
 
     private int bet = 0;
     private int insuranceBet = 0;
@@ -21,6 +24,8 @@ public class Hand {
     public int getBet() {
         return bet;
     }
+
+    public void doubleDown() {}
 
     public void addCard(Card card) {
         this.cards.add(card);
@@ -137,21 +142,38 @@ public class Hand {
             bust();
     }
 
-    public String hasWon(Hand dealer) {
-        if (hasBust())
+    public String hasWon(Hand dealer, Player player) {
+        this.runHasRun = true;
+        if (hasBust()) {
             return "Bust";
-        else if (hasBlackjack())
-            return "Blackjack";
-        else if (dealer.hasBust())
-            return "Won";
-        else if (calculateHand() == dealer.calculateHand())
+        }
+        else if (calculateHand() == dealer.calculateHand()) {
+            if (!this.runHasRun) player.addChips(this.bet);
             return "Pushed";
-        else if (calculateHand() > dealer.calculateHand())
+        }
+        else if (hasBlackjack()) {
+            if (!this.runHasRun) player.addChips(this.bet);
+            player.addChips(this.bet * 3);
+            return "Blackjack";
+        }
+        else if (dealer.hasBust()) {
+            if (!this.runHasRun) player.addChips(this.bet);
+            player.addChips(this.bet * 2);
             return "Won";
+        }
+        else if (calculateHand() > dealer.calculateHand()) {
+            if (!this.runHasRun) player.addChips(this.bet);
+            player.addChips(this.bet * 2);
+            return "Won";
+        }
         else return "Lost";
     }
 
     public void insuranceBet(int bet) {
         this.insuranceBet = Math.min(bet, this.bet / 2);
+    }
+
+    public int getInsuranceBet() {
+        return this.insuranceBet;
     }
 }

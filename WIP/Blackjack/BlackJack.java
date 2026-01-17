@@ -11,61 +11,76 @@ public class BlackJack {
         
         Scanner stdin = new Scanner(System.in);
         
-        /* TODO add rules
-         * https://bicyclecards.com/how-to-play/blackjack
-        */
-        System.out.printf("https://bicyclecards.com/how-to-play/blackjack\n");
+        System.out.printf("If you don't know the full rules of casino blackjack, look at them here\nhttps://bicyclecards.com/how-to-play/blackjack\n");
         
+        ArrayList<Player> players = new ArrayList<Player>();
+        
+        System.out.printf("How many players? (1-9): ");
+        
+        {
+            boolean isnt_int;
+            while ((isnt_int = !stdin.hasNextInt()) || (num_of_players = stdin.nextInt()) < 1 || num_of_players > 9) {
+                System.out.printf("How many players? (1-9): ");
+                if (isnt_int)
+                    stdin.next();
+            }
+
+        }
+        System.out.printf("Now agree among yourselves the betting limits\n");
+        System.out.println();
+
+        for (int i = 0; i < num_of_players; i++) {
+            System.out.printf("What is your name?: ");
+            players.add(new Player(stdin.next()));
+            
+            int chips;
+            while (true) {
+                System.out.printf("%s how many chips do you have?: ", players.get(i));
+                if (stdin.hasNextInt()) {
+                    chips = Math.abs(stdin.nextInt());
+                    break;
+                } else {
+                    stdin.next();
+                }
+            }
+            players.get(i).setChips(chips);
+        }
         
         while (play_again) {
-
+            
             Player dealer = new Player("Dealer");
-            ArrayList<Player> players = new ArrayList<Player>();
-
+            
             DeckOfCards deck = new DeckOfCards();
-    
+            
             deck.shuffle();
-    
+            
             dealer.getHands().add(new Hand());
-    
+            
             dealer.getHands().get(0).addCard(deck.dealCard());
             dealer.getHands().get(0).addCard(deck.dealCard());
-
+            
             if (dealer.getHands().get(0).calculateHand() == 21)
                 dealer.getHands().get(0).blackJack();
             
-            System.out.printf("How many players? (1-6): ");
-
-            {
-                boolean isnt_int;
-                while ( (isnt_int = !stdin.hasNextInt()) || (num_of_players = stdin.nextInt()) < 1 || num_of_players > 6) {
-                    System.out.printf("Must be a number 1 to 6\nHow many players? (1-6: default previous): ");
-                    if (isnt_int)
-                        stdin.next();
-                }
-    
-            }
-
-            System.out.printf("Now agree among yourselves the betting limits\n");
             
-            System.out.println();
             
             for (int i = 0; i < num_of_players; i++) {
-                System.out.printf("What is your name?: ");
-                players.add(new Player(stdin.next()));
                 players.get(i).getHands().add(new Hand());
                 players.get(i).getHands().get(0).addCard(deck.dealCard());
                 players.get(i).getHands().get(0).addCard(deck.dealCard());
-
+        
                 if (players.get(i).getHands().get(0).calculateHand() == 21) {
                     players.get(i).getHands().get(0).blackJack();
                 }
 
                 int bet;
                 while (true) {
-                    System.out.printf("%s what would you like your bet to be?: ", players.get(i));
+                    System.out.printf("%s what would you like your bet to be? You have %s chips: ",
+                        players.get(i), players.get(i).getChips());
                     if (stdin.hasNextInt()) {
-                        bet = Math.abs(stdin.nextInt());
+                        if ((bet = stdin.nextInt()) > 0 && bet < players.get(i).getChips())
+                            continue;
+                        players.get(i).addChips(-bet);
                         break;
                     } else {
                         stdin.next();
@@ -74,20 +89,9 @@ public class BlackJack {
                 players.get(i).getHands().get(0).setInitialBet(bet);
             }
 
-            Card dealerUp = dealer.getHands().get(0).getCard(0);
-
-            if (dealerUp.getFace().equals("Ace")) {
-                /* TODO Start insurance betting here */
-            }
-
-            if (dealer.getHands().get(0).hasBlackjack()) {
-                /* TODO deal with dealer blackjack, and if up is ace, then deal with insurance bets */
-            }
-
             System.out.println();
 
-            System.out.printf("Dealers up card is a %s\n", dealer.getHands().get(0).getCard(0));
-    
+            
             for (int i = 0; i < num_of_players; i++) {
                 System.out.printf("%s has a %s and a %s\n",
                     players.get(i).getName(), 
@@ -96,10 +100,40 @@ public class BlackJack {
                 );
             }
 
+            System.out.printf("Dealers up card is a %s\n", dealer.getHands().get(0).getCard(0));
+
+            if (dealer.getHands().get(0).getCard(0).getFace().equals("Ace")) {
+                for (int i = 0; i < num_of_players; i++) {
+                    int bet = -1;
+                    while (true) {
+                        System.out.printf("%s, would you like an insurance bet? (0-%s): ", players.get(i), players.get(i).getHands().get(0).getBet() / 2);
+                        if (stdin.hasNextInt()) {
+                            bet = stdin.nextInt();
+                            if (bet >= 0 && bet <= players.get(i).getHands().get(0).getBet() / 2 && bet <= players.get(i).getChips())
+                                break;
+                        } else {
+                            stdin.next();
+                        }
+                    }
+                    players.get(i).getHands().get(0).insuranceBet(bet);
+                }
+            }
+
+            if (dealer.getHands().get(0).hasBlackjack()) {
+                System.out.printf("Dealer has a Blackjack\n");
+                for (int i = 0; i < num_of_players; i++) {
+                    System.out.printf("You have won %s from insurance betting.\n",
+                        players.get(i).getHands().get(0).getInsuranceBet());
+                    players.get(i).addChips(players.get(i).getHands().get(0).getInsuranceBet());
+                }
+            }
+
             System.out.println();
 
             /* Main player loop */
             for (int i = 0; i < num_of_players; i++) {
+                if (dealer.getHands().get(0).hasBlackjack())
+                    break;
                 for (int j = 0; j < players.get(j).getHands().size(); j++) {
                     hitstand:
                     while (true) {
@@ -123,8 +157,8 @@ public class BlackJack {
                                     players.get(i).getHands().get(j + 1).addCard(deck.dealCard());
 
                                     if (players.get(i).getHands().get(j).getCard(0).getFace().equals("Ace")) {
-                                        /* TODO implement ace limits */
-                                        continue hitstand;
+                                        j++;
+                                        break hitstand;
                                     }
 
                                     continue hitstand;
@@ -132,7 +166,7 @@ public class BlackJack {
                                 } else if (in.equals("n")) {
                                     break input;
                                 } else {
-                                    continue;
+                                    continue input;
                                 }
                             }
                         }
@@ -184,11 +218,11 @@ public class BlackJack {
                 for (int j = 0; j < players.get(i).getHands().size(); j++) {
                     System.out.printf("%s's hand %s has %s\n",
                         players.get(i).getName(), j + 1,
-                        players.get(i).getHands().get(j).hasWon(dealer.getHands().get(0)));
+                        players.get(i).getHands().get(j).hasWon(dealer.getHands().get(0), players.get(i)));
                 }
             }
             play_again = false;
-            System.out.printf("Would you like to play again?: (y/n): ");            
+            System.out.printf("Would you like to keep playing?: (y/n): ");            
             if (stdin.next().equals("y"))
                 play_again = true;
 
