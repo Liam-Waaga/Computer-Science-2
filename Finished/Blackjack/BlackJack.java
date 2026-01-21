@@ -30,7 +30,7 @@ public class BlackJack {
         System.out.println();
 
         for (int i = 0; i < num_of_players; i++) {
-            System.out.printf("What is your name?: ");
+            System.out.printf("Player %s what is your name?: ", i + 1);
             players.add(new Player(stdin.next()));
             
             int chips;
@@ -44,9 +44,17 @@ public class BlackJack {
                 }
             }
             players.get(i).setChips(chips);
+            System.out.println();
         }
         
         while (play_again) {
+
+            for (int i = 0; i < num_of_players; i++) {
+                if (players.get(i).getChips() <= 0) {
+                    System.out.printf("%s has lost all their chips, they can no longer play\n", players.remove(i--));
+                    num_of_players--;
+                }
+            }
             
             Player dealer = new Player("Dealer");
             
@@ -78,15 +86,15 @@ public class BlackJack {
                     System.out.printf("%s what would you like your bet to be? You have %s chips: ",
                         players.get(i), players.get(i).getChips());
                     if (stdin.hasNextInt()) {
-                        if ((bet = stdin.nextInt()) > 0 && bet < players.get(i).getChips())
+                        if ((bet = stdin.nextInt()) <= 0 || bet > players.get(i).getChips())
                             continue;
                         players.get(i).addChips(-bet);
+                        players.get(i).getHands().get(0).setInitialBet(bet);
                         break;
                     } else {
                         stdin.next();
                     }
                 }
-                players.get(i).getHands().get(0).setInitialBet(bet);
             }
 
             System.out.println();
@@ -115,6 +123,7 @@ public class BlackJack {
                             stdin.next();
                         }
                     }
+                    players.get(i).addChips(-bet);
                     players.get(i).getHands().get(0).insuranceBet(bet);
                 }
             }
@@ -128,6 +137,12 @@ public class BlackJack {
                 }
             }
 
+            if (dealer.getHands().get(0).getCard(0).getFace().equals("Ace")
+                && !dealer.getHands().get(0).hasBlackjack()) {
+                    System.out.printf("Everyone has lost insurance bets\n");
+            }
+
+
             System.out.println();
 
             /* Main player loop */
@@ -137,6 +152,24 @@ public class BlackJack {
                 for (int j = 0; j < players.get(j).getHands().size(); j++) {
                     hitstand:
                     while (true) {
+                        if (!players.get(i).getHands().get(0).isSplit() &&
+                            players.get(i).getChips() >= players.get(i).getHands().get(0).getBet() &&
+                            players.get(i).getHands().get(0).calculateHand() > 8 &&
+                            players.get(i).getHands().get(0).calculateHand() < 12) {
+                                String in = "";
+                                while (true) {
+                                    System.out.printf("%s would you like to double down? (y/n): ", players.get(i));
+                                    in = stdin.next();
+                                    if (in.equals("y")) {
+                                        int bet = players.get(i).getHands().get(0).getBet();
+                                        players.get(i).addChips(-bet);
+                                        players.get(i).getHands().get(0).doubleDown(deck.dealCard());
+                                        break hitstand;
+                                    } else if (in.equals("n")) {
+                                        break;
+                                    }
+                                }
+                        }
                         if (players.get(i).getHands().get(j).calculateHand() == 21) {
                             System.out.printf("%s's hand %s has %s. Your total is %s. You have a Blackjack.\n", 
                                 players.get(i).getName(), j + 1, players.get(i), players.get(i).getHands().get(j).calculateHand());
@@ -188,11 +221,15 @@ public class BlackJack {
                             }
                         }
                     }
-                    if (players.get(i).getHands().get(j).calculateHand() > 21) {
-                        players.get(i).getHands().get(j).bust();
-                        System.out.printf("%s's hand %s has %s. Your total is %s. You have bust.\n", players.get(i).getName(), j + 1, players.get(i).getHands().get(j), players.get(i).getHands().get(j).calculateHand());
-                    } else if (players.get(i).getHands().get(j).calculateHand() == 21) {
-                        System.out.printf("%s's hand %s has %s. Your total is %s.\n", players.get(i).getName(), j + 1, players.get(i), players.get(i).getHands().get(j).calculateHand());
+                    if (!players.get(i).getHands().get(j).hasDoubledDown()) {
+                        if (players.get(i).getHands().get(j).calculateHand() > 21) {
+                            players.get(i).getHands().get(j).bust();
+                            System.out.printf("%s's hand %s has %s. Your total is %s. You have bust.\n", players.get(i).getName(), j + 1, players.get(i).getHands().get(j), players.get(i).getHands().get(j).calculateHand());
+                        } else if (players.get(i).getHands().get(j).calculateHand() == 21) {
+                            System.out.printf("%s's hand %s has %s. Your total is %s.\n", players.get(i).getName(), j + 1, players.get(i), players.get(i).getHands().get(j).calculateHand());
+                        }
+                    } else {
+                        System.out.printf("%s's hand %s has %s. Your total is %s. You have also doubled down.\n", players.get(i).getName(), j + 1, players.get(i).getHands().get(j), players.get(i).getHands().get(j).calculateHand());
                     }
                     System.out.println();
                 }
@@ -222,9 +259,12 @@ public class BlackJack {
                 }
             }
             play_again = false;
-            System.out.printf("Would you like to keep playing?: (y/n): ");            
-            if (stdin.next().equals("y"))
+            System.out.printf("Would you like to keep playing?: (Y/n): ");            
+            if (!stdin.next().equals("n"))
                 play_again = true;
+            for (int i = 0; i < num_of_players; i++)
+                players.get(i).clearHands();
+            System.out.println();
 
         }
 

@@ -2,18 +2,27 @@ import java.util.ArrayList;
 
 public class Hand {
     private ArrayList<Card> cards;
-    private Card doubleDownCard;
+    private Card doubleDownCard = null;
     private boolean hasBust = false;
     private boolean blackJack = false;
     private boolean isSplit = false;
 
-    private boolean runHasRun = false;
+    private boolean runHasWon = false;
 
     private int bet = 0;
     private int insuranceBet = 0;
 
     public Hand() {
         this.cards = new ArrayList<Card>();
+    }
+
+    public void doubleDown(Card card) {
+        this.bet *= 2;
+        this.doubleDownCard = card;
+    }
+
+    public boolean hasDoubledDown() {
+        return doubleDownCard != null;
     }
 
     public void setInitialBet(int bet) {
@@ -24,8 +33,6 @@ public class Hand {
     public int getBet() {
         return bet;
     }
-
-    public void doubleDown() {}
 
     public void addCard(Card card) {
         this.cards.add(card);
@@ -90,6 +97,8 @@ public class Hand {
         for (int i = 1; i < cards.size(); i++) {
             out += " and a " + cards.get(i).toString();
         }
+        if (doubleDownCard != null)
+            out += " and a double down card";
 
         return out;
     }
@@ -143,30 +152,33 @@ public class Hand {
     }
 
     public String hasWon(Hand dealer, Player player) {
-        this.runHasRun = true;
+        if (doubleDownCard != null) {
+            cards.add(doubleDownCard);
+        }
+        
         if (hasBust()) {
+            this.runHasWon = true;
             return "Bust";
-        }
-        else if (calculateHand() == dealer.calculateHand()) {
-            if (!this.runHasRun) player.addChips(this.bet);
+        } else if (calculateHand() == dealer.calculateHand()) {
+            if (!this.runHasWon) player.addChips(this.bet);
+            this.runHasWon = true;
             return "Pushed";
-        }
-        else if (hasBlackjack()) {
-            if (!this.runHasRun) player.addChips(this.bet);
-            player.addChips(this.bet * 3);
+        } else if (hasBlackjack()) {
+            if (!this.runHasWon) player.addChips((int)(this.bet * 2.5));
+            this.runHasWon = true;
             return "Blackjack";
-        }
-        else if (dealer.hasBust()) {
-            if (!this.runHasRun) player.addChips(this.bet);
-            player.addChips(this.bet * 2);
+        } else if (dealer.hasBust()) {
+            if (!this.runHasWon) player.addChips(this.bet * 2);
+            this.runHasWon = true;
             return "Won";
-        }
-        else if (calculateHand() > dealer.calculateHand()) {
-            if (!this.runHasRun) player.addChips(this.bet);
-            player.addChips(this.bet * 2);
+        } else if (calculateHand() > dealer.calculateHand()) {
+            if (!this.runHasWon) player.addChips(this.bet * 2);
+            this.runHasWon = true;
             return "Won";
+        } else {
+            this.runHasWon = true;
+            return "Lost";
         }
-        else return "Lost";
     }
 
     public void insuranceBet(int bet) {
