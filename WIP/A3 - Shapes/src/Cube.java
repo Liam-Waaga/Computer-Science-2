@@ -1,4 +1,4 @@
 
-public class Cube extends Polyhedron {
+public class Cube implements PlatonicSolid {
     
 }

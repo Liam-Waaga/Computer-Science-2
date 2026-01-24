@@ -1,4 +1,45 @@
 
-public class Circle extends Polygon {
+public class Circle implements Shape {
     
+    private double radius;
+    private Point center;
+    
+    public Circle() {
+        this.radius = 1;
+        this.center = new Point(new double[] {0,0});
+    }
+    
+    public Circle(double radius) {
+        this.radius = radius;
+        this.center = new Point(new double[] {0,0});
+    }
+
+    public Circle(double radius, Point center) {
+        this.radius = radius;
+        this.center = center;
+    }
+
+    public double volume() {
+        return radius * radius;
+    }
+
+    public int numSides() {
+        return ~0;
+    }
+
+    public Point getCenter() {
+        return center;
+    }
+
+    public void setCenter(Point center) {
+        this.center = center;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(double sideLength) {
+        this.radius = sideLength;
+    }
 }

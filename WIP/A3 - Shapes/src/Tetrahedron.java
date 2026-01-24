@@ -1,3 +1,3 @@
-public class Tetrahedron extends Polyhedron {
+public class Tetrahedron implements PlatonicSolid {
     
 }
