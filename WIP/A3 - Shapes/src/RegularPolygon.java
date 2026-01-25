@@ -28,7 +28,6 @@ public class RegularPolygon implements Shape {
     }
 
     public double volume() {
-        double area;
         double triangleArea = sideLength * sideLength / Math.tan(Math.PI / numSides) / 4;
         return triangleArea * numSides;
     }

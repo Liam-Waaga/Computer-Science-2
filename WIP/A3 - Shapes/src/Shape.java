@@ -7,5 +7,6 @@ public interface Shape {
      */
     public double volume();
     public int numSides();
-
+    public Point getPosition();
+    public void setPosition(Point position);
 }

@@ -20,18 +20,18 @@ public class Circle implements Shape {
     }
 
     public double volume() {
-        return radius * radius;
+        return radius * radius * Math.PI;
     }
 
     public int numSides() {
         return ~0;
     }
 
-    public Point getCenter() {
+    public Point getPosition() {
         return center;
     }
 
-    public void setCenter(Point center) {
+    public void setPosition(Point center) {
         this.center = center;
     }
 

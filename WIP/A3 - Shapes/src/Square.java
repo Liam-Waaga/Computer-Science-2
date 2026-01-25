@@ -16,7 +16,4 @@ public class Square extends RegularPolygon {
     public double volume() {
         return getSideLength() * getSideLength();
     }
-
-    
-
 }
