@@ -2,8 +2,8 @@ public abstract class Bird extends Animal {
 
     private double flySpeed = 0;
 
-    public Bird(String species, double age, String name, String sex, double weight, double flySpeed) {
-        super(species, age, name, sex, weight);
+    public Bird(String species, double age, String name, String sex, double flySpeed) {
+        super(species, age, name, sex);
         this.flySpeed = flySpeed;
     }
 

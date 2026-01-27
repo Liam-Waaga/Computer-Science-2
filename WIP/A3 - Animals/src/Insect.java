@@ -3,8 +3,8 @@ public abstract class Insect extends Animal {
     private double movementSpeed = 0;
     private boolean canFly = false;
 
-    public Insect(String species, double age, String name, String sex, double weight, double movementSpeed, boolean canFly) {
-        super(species, age, name, sex, weight);
+    public Insect(String species, double age, String name, String sex, double movementSpeed, boolean canFly) {
+        super(species, age, name, sex);
         this.movementSpeed = movementSpeed;
         this.canFly = canFly;
     }

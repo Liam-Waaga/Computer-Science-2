@@ -1,3 +1,5 @@
+import java.util.Optional;
+
 public abstract class Animal {
     private String name = "";
     private String species = "";
@@ -6,12 +8,19 @@ public abstract class Animal {
     private String sex = "";
     /* kg */
     private double weight = 0;
+    private boolean dead;
 
-    public Animal(String species, double age, String name, String sex, double weight) {
+    protected abstract double MAX_AGE();
+    protected abstract double MATURE_AGE();
+    protected abstract double MATURE_WEIGHT();
+    protected abstract double BABY_WEIGHT();
+
+    public Animal(String species, double age, String name, String sex) {
         this.species = species;
         this.name = name;
         this.age = age;
-        this.weight = weight;
+        this.weight = 0;
+        this.dead = false;
     }
     
     public String getName() {
@@ -30,10 +39,6 @@ public abstract class Animal {
         return this.age;
     }
 
-    public void setAge(double age) {
-        this.age = age;
-    }
-
     public String getSex() {
         return this.sex;
     }
@@ -41,15 +46,35 @@ public abstract class Animal {
     public double getWeight() {
         return this.weight;
     }
+    
+    public String toString() {
+        return this.sex + " " + this.species + " named " + this.name + " which weighs " + this.weight + "kg" + " and is " + (dead ? "" : "not ") + "dead";
+    }
+    
+    public void die() {
+        this.dead = true;
+    }
+    
+    public boolean isAdult() {
+        return getAge() >= MATURE_AGE();
+    }
 
-    public void setWeight(double weight) {
+    public abstract Optional<Animal> bread(Animal other, String name);
+    
+    public void ageUp() {
+        this.setAge(this.getAge() + 1);
+        if (MAX_AGE() < getAge())
+            die();
+    }
+
+    protected void setWeight(double weight) {
         this.weight = weight;
     }
 
-    public String toString() {
-        return this.sex + " " + this.species + " named " + this.name + " which weighs " + this.weight + "kg";
+    protected void setAge(double age) {
+        this.age = age;
     }
-
+    
     protected void setSex(String sex) {
         this.sex = sex;
     }
