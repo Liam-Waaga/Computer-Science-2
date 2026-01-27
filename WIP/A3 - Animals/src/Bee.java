@@ -34,6 +34,7 @@ public class Bee extends Insect {
         super("Bee", age, name, sex, 8, true);
         if (age > MAX_AGE())
             die();
+        setWeight(MATURE_WEIGHT());
     }
 
     public Optional<Animal> bread(Animal other, String name) {

@@ -2,8 +2,8 @@ public abstract class Fish extends Animal {
 
     private double swimSpeed = 0;
 
-    public Fish(String species, double age, String name, String sex, double weight, double swimSpeed) {
-        super(species, age, name, sex, weight);
+    public Fish(String species, double age, String name, String sex, double swimSpeed) {
+        super(species, age, name, sex);
         this.swimSpeed = swimSpeed;
     }
 
