@@ -1,4 +1,5 @@
 public abstract class Insect extends Animal {
+    /* m/s */
     private double movementSpeed = 0;
     private boolean canFly = false;
 

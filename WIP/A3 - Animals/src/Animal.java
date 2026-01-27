@@ -49,4 +49,12 @@ public abstract class Animal {
     public String toString() {
         return this.sex + " " + this.species + " named " + this.name + " which weighs " + this.weight + "kg";
     }
+
+    protected void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    protected void setSpecies(String species) {
+        this.species = species;
+    }
 }
