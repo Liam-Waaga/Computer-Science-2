@@ -49,7 +49,8 @@ public class Bee extends Insect {
     }
 
     public void ageUp() {
-        setAge(getAge() + 1/52);
+        /* java needs an integer division warning */
+        setAge(getAge() + (double) 1/52);
         if (getAge() > MAX_AGE())
             die();
     }

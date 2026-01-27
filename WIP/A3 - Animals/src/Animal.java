@@ -10,6 +10,11 @@ public abstract class Animal {
     private double weight = 0;
     private boolean dead;
 
+
+    /* don't worry about these functions :) */
+    /* they technically aren't needed but they exist for some super class abstractions */ 
+    /* allowing to basically have a `protected abstract static final double`, except not quite, and these aren't static */
+    /* static protected does basically nothing because i don't have any static functions which might want to access them */
     protected abstract double MAX_AGE();
     protected abstract double MATURE_AGE();
     protected abstract double MATURE_WEIGHT();
@@ -53,6 +58,9 @@ public abstract class Animal {
     
     public void die() {
         this.dead = true;
+    }
+    public boolean isDead() {
+        return this.dead;
     }
     
     public boolean isAdult() {
