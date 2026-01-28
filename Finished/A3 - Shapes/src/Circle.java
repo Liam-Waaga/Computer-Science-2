@@ -42,4 +42,8 @@ public class Circle implements Shape {
     public void setRadius(double sideLength) {
         this.radius = sideLength;
     }
+
+    public String getName() {
+        return "Circle";
+    }
 }

@@ -17,4 +17,8 @@ public class EquilateralTriangle extends RegularPolygon {
     public double volume() {
         return getSideLength() * getSideLength() * Math.sqrt(3) / 4;
     }
+
+    public String getName() {
+        return "Equilateral Triangle";
+    }
 }

@@ -46,4 +46,8 @@ public class Cube implements PlatonicSolid {
     public void setPosition(Point position) {
         this.position = position;
     }
+
+    public String getName() {
+        return "Cube";
+    }
 }

@@ -9,4 +9,5 @@ public interface Shape {
     public int numSides();
     public Point getPosition();
     public void setPosition(Point position);
+    public String getName();
 }

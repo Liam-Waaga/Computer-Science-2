@@ -52,4 +52,8 @@ public class RegularPolygon implements Shape {
         this.sideLength = sideLength;
     }
 
+    public String getName() {
+        return numSides + "-gon";
+    }
+
 }

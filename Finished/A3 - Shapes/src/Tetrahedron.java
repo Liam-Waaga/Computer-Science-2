@@ -44,4 +44,8 @@ public class Tetrahedron implements PlatonicSolid {
     public double volume() {
         return this.sideLength * this.sideLength * this.sideLength * Math.sqrt(2) / 12;
     }
+
+    public String getName() {
+        return "Tetrahedron";
+    }
 }

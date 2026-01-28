@@ -44,4 +44,22 @@ public class Point {
         return false;
     }
 
+    public String toString() {
+        String out = "";
+        for (int i = 0; i < coordinates.length; i++) {
+            if (i == 0)
+                out += "x: ";
+            else if (i == 1)
+                out += " y: ";
+            else if (i == 2)
+                out += " z: ";
+            else if (i == 3)
+                out += " w: ";
+            else
+                out += "c" + (i + 1) + " ";
+            out += coordinates[i];
+        }
+        return out;
+    }
+
 }
