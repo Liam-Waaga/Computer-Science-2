@@ -25,10 +25,10 @@ public class CountWords {
     }
 
     public static int countWords(String content) {
-        boolean isNotWord = false;
+        boolean isNotWord = true;
         int words = 0;
         for (char c : content.toCharArray()) {
-            if (c >= 65 || c <= 90 || c >= 92 || c <= 122) {
+            if ((c >= 65 && c <= 90) || (c >= 92 & c <= 122)) {
                 if (isNotWord) {
                     words++;
                     isNotWord = false;
@@ -45,6 +45,6 @@ public class CountWords {
         String URL = "https://liveexample.pearsoncmg.com/data/Lincoln.txt";
         String file = getStringHttp(URL);
         
-        System.out.printf("The file at %s has %d words in it\n\nThe File\n%s\n", URL, countWords(file), file);
+        System.out.printf("The file at %s has %d words in it\n\nThe File:\n%s\n", URL, countWords(file), file);
     }
 }
