@@ -43,6 +43,11 @@ public class CountWords {
 
     public static void main(String[] args) {
         String URL = "https://liveexample.pearsoncmg.com/data/Lincoln.txt";
+
+        if (args.length >= 1) {
+            URL = args[0];
+        }
+
         String file = getStringHttp(URL);
         
         System.out.printf("The file at %s has %d words in it\n\nThe File:\n%s\n", URL, countWords(file), file);
