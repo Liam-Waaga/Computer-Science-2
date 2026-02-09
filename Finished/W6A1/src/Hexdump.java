@@ -1,9 +1,8 @@
 import java.io.File;
 import java.nio.file.Files;
-import java.util.Scanner;
 
 
-public class Main {
+public class Hexdump {
     
     public static void main(String[] args) {
         if (args.length < 1) {
