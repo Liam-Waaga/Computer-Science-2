@@ -43,7 +43,7 @@ public class Hexdump {
             System.exit(1);
         }
 
-        System.out.println("Index     Value                    Ascii");
+        System.out.println("Index     Value                                            Ascii");
 
         for (int i = 0; i < bytes.length; i += 16) {
             System.out.print(String.format("%8X", i).replace(' ',     '0') + "  ");
