@@ -32,5 +32,7 @@ public class LCD {
         den3 /= gcd3;
         num3 /= gcd3;
         System.out.printf("result: %d/%d\n", num3, den3);
+
+        stdin.close();
     }
 }
