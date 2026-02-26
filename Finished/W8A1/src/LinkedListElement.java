@@ -21,6 +21,10 @@ public class LinkedListElement<T> {
         return object;
     }
 
+    public void setObject(T object) {
+        this.object = object;
+    }
+
     /* May return null if there is no next element (end of list) */
     public LinkedListElement<T> next() {
         return next;

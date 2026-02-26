@@ -22,7 +22,7 @@ public class Test {
             )
         );
 
-        start.addAfter(
+        start.next().addAfter(
             new LinkedListElement<PhoneBook>(
                 new PhoneBook(
                     "Galenos Ismayil",
@@ -33,7 +33,7 @@ public class Test {
             )
         );
 
-        start.addAfter(
+        start.next().next().addAfter(
             new LinkedListElement<PhoneBook>(
                 new PhoneBook(
                     "Hed Shankar",
