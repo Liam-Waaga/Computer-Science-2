@@ -62,7 +62,7 @@ public class LinkedListElement<T> {
     //             last.is_circular = true;
     //         }
     //     }
-        
+
     //     if (first == null) {
     //         first = this;
     //     } else {
@@ -99,5 +99,9 @@ public class LinkedListElement<T> {
             this.next.previous = this;
         }
         return removed;
+    }
+
+    public String toString() {
+        return this.object.toString();
     }
 }

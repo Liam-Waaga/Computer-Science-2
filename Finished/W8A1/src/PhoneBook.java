@@ -6,11 +6,12 @@ public class PhoneBook {
     private String email;
     private String cellnumber;
 
+    /* null is permitted, substituted for "unknown" */
     public PhoneBook(String name, String address, String email, String cellnumber) {
-        this.name = name;
-        this.address = address;
-        this.email = email;
-        this.cellnumber = cellnumber;
+        this.name = name == null ? "unkown" : name;
+        this.address = address == null ? "unkown" : address;
+        this.email = email == null ? "unkown" : email;
+        this.cellnumber = cellnumber == null ? "unkown" : cellnumber;
     }
 
     public String getName() {
